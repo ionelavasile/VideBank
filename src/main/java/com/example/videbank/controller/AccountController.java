@@ -1,9 +1,11 @@
 package com.example.videbank.controller;
+
 import com.example.videbank.dto.AccountDto;
 import com.example.videbank.service.AccountService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -22,6 +24,7 @@ public class AccountController {
         return ResponseEntity.ok(accountDto);
     }
 
+
     @GetMapping
     public ResponseEntity<List<AccountDto>> getAllAccounts() {
         List<AccountDto> accountDto = accountService.getAllAccounts();
@@ -34,11 +37,13 @@ public class AccountController {
         return ResponseEntity.ok(createdAccountDto);
     }
 
+
     @PostMapping("/save")
     public ResponseEntity<AccountDto> saveAccount(@RequestBody AccountDto accountDto) {
         AccountDto savedAccountDto = accountService.saveAccount(accountDto);
         return new ResponseEntity<>(savedAccountDto, HttpStatus.CREATED);
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<AccountDto> updateAccount(@PathVariable Long id, @RequestBody AccountDto accountDto) {

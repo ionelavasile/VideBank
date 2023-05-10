@@ -1,8 +1,7 @@
 package com.example.videbank.dto;
-import com.example.videbank.entity.Account;
-import com.example.videbank.entity.CurrencyType;
-import com.example.videbank.entity.DirectionOfTransaction;
+import com.example.videbank.entity.*;
 import lombok.*;
+
 
 @Data
 @NoArgsConstructor
@@ -15,6 +14,7 @@ public class TransactionDto {
     private DirectionOfTransaction directionOfTransaction;
     private String description;
     private Double balanceAfterTransaction;
-    private Account senderAccount;
-    private Account receiverAccount;
+    private AccountDto senderAccount;
+    private AccountDto receiverAccount;
 }
+

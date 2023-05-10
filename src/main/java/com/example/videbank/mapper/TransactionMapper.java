@@ -37,5 +37,12 @@ public class TransactionMapper {
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
+
+    public List<Transaction> toEntityList(List<TransactionDto> transactionDto) {
+        return transactionDto.stream()
+                .map(this::toEntity)
+                .collect(Collectors.toList());
+    }
 }
+
 

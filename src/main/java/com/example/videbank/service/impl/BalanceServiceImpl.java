@@ -5,10 +5,9 @@ import com.example.videbank.entity.Balance;
 import com.example.videbank.mapper.BalanceMapper;
 import com.example.videbank.repository.BalanceRepository;
 import com.example.videbank.service.BalanceService;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-
+import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 

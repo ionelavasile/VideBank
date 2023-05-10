@@ -1,11 +1,10 @@
 package com.example.videbank.entity;
-import jakarta.persistence.*;
+
 import lombok.*;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import javax.persistence.*;
 
-    @Entity
+@Entity
     @Data
     @Getter
     @Setter
@@ -23,7 +22,7 @@ import lombok.NoArgsConstructor;
         private Account account;
 
         @Enumerated(EnumType.STRING)
-        @Column(name = "currency", nullable = false)
+        @Column(name = "currency_type", nullable = false)
         private CurrencyType currencyType;
 
         @Column(name = "amount", nullable = false)
@@ -33,7 +32,8 @@ import lombok.NoArgsConstructor;
         private String description;
 
 
-
+        public void setBalance(Double balance) {
+        }
     }
 
 

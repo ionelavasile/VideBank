@@ -1,6 +1,10 @@
 package com.example.videbank.service;
 
 import com.example.videbank.dto.AccountDto;
+import com.example.videbank.entity.CurrencyType;
+import com.example.videbank.exceptions.InsufficientBalanceException;
+
+import javax.security.auth.login.AccountNotFoundException;
 import java.util.List;
 
 
@@ -23,4 +27,10 @@ public interface AccountService {
 
     // Update an existing account
     AccountDto updateAccount(AccountDto accountDto);
+
+    void transferMoney(Long senderAccountId, Long receiverAccountId, Double amount, CurrencyType currencyType) throws InsufficientBalanceException, AccountNotFoundException;
+
+    AccountDto withdraw(Long senderAccountId, Double amount) throws InsufficientBalanceException, AccountNotFoundException;
+
+    AccountDto deposit(Long receiverAccountId, Double amount) throws AccountNotFoundException;
 }

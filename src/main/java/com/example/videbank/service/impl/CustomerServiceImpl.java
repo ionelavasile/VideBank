@@ -1,13 +1,15 @@
 package com.example.videbank.service.impl;
+
 import com.example.videbank.dto.CustomerDto;
 import com.example.videbank.entity.Customer;
 import com.example.videbank.mapper.CustomerMapper;
 import com.example.videbank.repository.CustomerRepository;
 import com.example.videbank.service.CustomerService;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import javax.transaction.Transactional;
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -31,28 +33,30 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public List<CustomerDto> getAllCustomers() {
         List<Customer> customers = customerRepository.findAll();
-        return customerMapper.toDtoList(customers);
+        return customers.stream()
+                .map(customerMapper::toDto)
+                .collect(Collectors.toList());
     }
+
 
     @Override
     public CustomerDto createCustomer(CustomerDto customerDto) {
-        Customer customer = customerMapper.toEntity(customerDto);
+        Customer customer = customerMapper.toEntity(customerDto).toEntity();
         customer = customerRepository.save(customer);
         return customerMapper.toDto(customer);
     }
 
     @Override
     public CustomerDto saveCustomer(CustomerDto customerDto) {
-        Customer customer = customerMapper.toEntity(customerDto);
+        Customer customer = customerMapper.toEntity(customerDto).toEntity();
         customer = customerRepository.save(customer);
         return customerMapper.toDto(customer);
     }
 
     @Override
     public CustomerDto updateCustomer(CustomerDto customerDto) {
-        Customer customer = customerRepository.findById(String.valueOf(customerDto.getId()))
-                .orElseThrow(() -> new EntityNotFoundException("Customer not found with id: " + customerDto.getId()));
-        customer = customerMapper.toEntity(customerDto);
+        Customer customer;
+        customer = customerMapper.toEntity(customerDto).toEntity();
         customer = customerRepository.save(customer);
         return customerMapper.toDto(customer);
     }

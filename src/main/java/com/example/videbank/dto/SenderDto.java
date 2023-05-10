@@ -9,10 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReceiverAccountDto {
-    private Long id;
-    private AccountDto account;
-    private Double balance;
-
+public class SenderDto {
+    private SenderAccountDto senderAccount;
+    private TransactionDto transaction;
 }
 

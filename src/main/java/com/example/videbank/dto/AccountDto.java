@@ -1,9 +1,11 @@
 package com.example.videbank.dto;
-import com.example.videbank.entity.Balance;
+
+import com.example.videbank.entity.Account;
 import com.example.videbank.entity.CurrencyType;
 import lombok.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -17,26 +19,33 @@ public class AccountDto {
     private Double balance;
     private CurrencyType currencyType;
     private CustomerDto customer;
+    private List<BalanceDto> balances;
     private AccountDto senderAccount;
     private AccountDto receiverAccount;
 
-    public AccountDto(Long id, CustomerDto customerDto, CurrencyType currencyType, List<BalanceDto> balancesDto,
-                      AccountDto senderAccountDto, AccountDto receiverAccountDto) {
-        this.id = id;
-        this.customer = customerDto;
-        this.currencyType = currencyType;
-        this.senderAccount = senderAccountDto;
-        this.receiverAccount = receiverAccountDto;
-        if (balancesDto != null && !balancesDto.isEmpty()) {
-            this.balance = balancesDto.stream().mapToDouble(BalanceDto::getAmount).sum();
-        }
+    public Account toEntity() {
+        return Account.builder()
+                .id(id)
+                .currencyType(currencyType)
+                .customer(customer.toEntity())
+                .balances(balances.stream().map(BalanceDto::toEntity).collect(Collectors.toList()))
+                .build();
+    }
+
+    public CustomerDto getCustomer() {
+        return customer;
     }
 
 
-    public void setBalances(List<Balance> balances) {
+    public AccountDto getSenderAccount() {
+        return senderAccount;
     }
 
-    public List<Balance> getBalances() {
-        return null;
+    public AccountDto getReceiverAccount() {
+        return receiverAccount;
     }
 }
+
+
+
+

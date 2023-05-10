@@ -1,5 +1,6 @@
 package com.example.videbank.service;
 import com.example.videbank.dto.TransactionDto;
+
 import java.util.List;
 
 
@@ -16,5 +17,7 @@ public interface TransactionService {
     void deleteTransaction(Long id);
 
     TransactionDto saveTransaction(TransactionDto TransactionDto);
+
+
 }
 
