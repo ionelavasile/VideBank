@@ -5,7 +5,7 @@ import com.example.videbank.entity.CurrencyType;
 import lombok.*;
 
 import java.util.List;
-
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -21,19 +21,35 @@ public class BalanceDto {
     private AccountDto account;
     private String description;
 
-    public static List<BalanceDto> fromEntityList(List<Balance> balances) {
-        return null;
+    public BalanceDto(Long id, AccountDto toDto, Double amount, CurrencyType currencyType, String description) {
     }
+
+    public static List<BalanceDto> fromEntityList(List<Balance> balances) {
+        return balances.stream()
+                .map(balance -> {
+                    BalanceDto balanceDto = new BalanceDto();
+                    balanceDto.setId(balance.getId());
+                    balanceDto.setAccount(AccountDto.fromEntity(balance.getAccount()));
+                    balanceDto.setCurrencyType(balance.getCurrencyType());
+                    balanceDto.setAmount(balance.getAmount());
+                    balanceDto.setDescription(balance.getDescription());
+                    return balanceDto;
+                })
+                .collect(Collectors.toList());
+    }
+
+
 
     public Balance toEntity() {
         Balance balance = new Balance();
         balance.setId(this.id);
-        balance.setBalance(this.balance);
-        balance.setCurrencyType(this.currencyType);
         balance.setAmount(this.amount);
+        balance.setCurrencyType(this.currencyType);
         balance.setAccount(this.account.toEntity());
         balance.setDescription(this.description);
         return balance;
     }
 }
+
+
 

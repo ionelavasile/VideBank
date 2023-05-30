@@ -1,5 +1,6 @@
 package com.example.videbank.dto;
 
+import com.example.videbank.entity.Account;
 import com.example.videbank.entity.Customer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,22 +24,34 @@ public class CustomerDto {
     private List<AccountDto> accounts;
 
     public static CustomerDto fromEntity(Customer customer) {
-        return null;
+        List<AccountDto> accountDtos = customer.getAccounts().stream()
+                .map(AccountDto::fromEntity)
+                .collect(Collectors.toList());
+
+        return CustomerDto.builder()
+                .id(customer.getId())
+                .firstName(customer.getFirstName())
+                .lastName(customer.getLastName())
+                .email(customer.getEmail())
+                .phone(customer.getPhone())
+                .country(customer.getCountry())
+                .accounts(accountDtos)
+                .build();
     }
 
     public Customer toEntity() {
-        Customer customer = new Customer();
-        customer.setId(id);
-        customer.setFirstName(firstName);
-        customer.setLastName(lastName);
-        customer.setEmail(email);
-        customer.setPhone(phone);
-        customer.setCountry(country);
-        customer.setAccounts(accounts.stream()
+        List<Account> accountEntities = accounts.stream()
                 .map(AccountDto::toEntity)
-                .collect(Collectors.toList()));
-        return customer;
+                .collect(Collectors.toList());
+
+        return Customer.builder()
+                .id(id)
+                .firstName(firstName)
+                .lastName(lastName)
+                .email(email)
+                .phone(phone)
+                .country(country)
+                .accounts(accountEntities)
+                .build();
     }
-
 }
-

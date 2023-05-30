@@ -1,8 +1,11 @@
 package com.example.videbank.controller;
 
 import com.example.videbank.dto.TransactionDto;
+import com.example.videbank.dto.TransferMoneyRequestDto;
+import com.example.videbank.entity.CurrencyType;
 import com.example.videbank.mapper.TransactionMapper;
 import com.example.videbank.service.TransactionService;
+import com.example.videbank.service.TransferMoney;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,10 +18,13 @@ public class TransactionController {
 
     private final TransactionService transactionService;
     private final TransactionMapper transactionMapper;
+    private final TransferMoney transferMoney;
 
-    public TransactionController(TransactionService transactionService, TransactionMapper transactionMapper) {
+
+    public TransactionController(TransactionService transactionService, TransactionMapper transactionMapper, TransferMoney transferMoney) {
         this.transactionService = transactionService;
         this.transactionMapper = transactionMapper;
+        this.transferMoney = transferMoney;
     }
 
     @GetMapping("/{id}")
@@ -29,8 +35,8 @@ public class TransactionController {
 
     @GetMapping
     public ResponseEntity<List<TransactionDto>> getAllTransactions() {
-        List<TransactionDto> transactionDto = transactionService.getAllTransactions();
-        return ResponseEntity.ok(transactionDto);
+        List<TransactionDto> transactionDtos = transactionService.getAllTransactions();
+        return ResponseEntity.ok(transactionDtos);
     }
 
     @PostMapping
@@ -52,4 +58,18 @@ public class TransactionController {
         transactionService.deleteTransaction(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/transfer")
+    public ResponseEntity<TransactionDto> transferMoney(@RequestBody TransferMoneyRequestDto transferRequestDto) {
+
+        Long senderAccountId = transferRequestDto.getSenderAccountId();
+        Long receiverAccountId = transferRequestDto.getReceiverAccountId();
+        Double amount = transferRequestDto.getAmount();
+        CurrencyType currencyType = transferRequestDto.getCurrencyType();
+        String description = transferRequestDto.getDescription();
+
+        TransactionDto transactionDto = transferMoney.transferMoney(senderAccountId, receiverAccountId, amount, currencyType, description);
+        return ResponseEntity.ok(transactionDto);
+    }
 }
+

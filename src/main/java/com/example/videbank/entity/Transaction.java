@@ -4,11 +4,12 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Entity(name = "transaction")
+@Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+
 public class Transaction {
 
     @Id
@@ -40,18 +41,32 @@ public class Transaction {
                        String description, Account senderAccount, Account receiverAccount) {
         this.amount = amount;
         this.currencyType = currencyType;
-        this.directionOfTransaction = directionOfTransaction;
+        this.directionOfTransaction= directionOfTransaction;
         this.description = description;
         this.senderAccount = senderAccount;
         this.receiverAccount = receiverAccount;
     }
 
+
     public Double getBalanceAfterTransaction() {
+        // Implement the logic to calculate and return the balance after the transaction
         return null;
     }
 
     public void setBalanceAfterTransaction(Double balanceAfterTransaction) {
+        // Implement the logic to set the balance after the transaction
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+
+    public void setCurrencyType(CurrencyType currencyType) {
+        this.currencyType = currencyType;
+    }
+
+    public void setDirectionOfTransaction(DirectionOfTransaction directionOfTransaction) {
+        this.directionOfTransaction = directionOfTransaction;
     }
 }
-
 

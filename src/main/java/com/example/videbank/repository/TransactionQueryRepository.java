@@ -9,10 +9,12 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 @Repository
 public interface TransactionQueryRepository extends JpaRepository<Transaction, Long> {
-    @Query("SELECT t FROM transaction t WHERE t.directionOfTransaction = :direction AND t.currencyType = :currency")
-    List<Transaction> findByDirectionOfTransactionAndCurrencyType(@Param("direction") DirectionOfTransaction direction,
-                                                                  @Param("currency") CurrencyType currency);
+    @Query("SELECT t FROM Transaction t WHERE t.directionOfTransaction = :direction AND t.currencyType = :currency")
+    List<Transaction> findByDirectionOfTransactionAnAndCurrencyType(@Param("direction") DirectionOfTransaction direction,
+                                                                  @Param("currency") CurrencyType currencyType);
 }
+
+
 
 
 

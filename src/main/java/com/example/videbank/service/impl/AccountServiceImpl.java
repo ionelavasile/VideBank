@@ -15,7 +15,6 @@ import com.example.videbank.mapper.CustomerMapper;
 import com.example.videbank.repository.AccountRepository;
 import com.example.videbank.repository.TransactionRepository;
 import com.example.videbank.service.AccountService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,34 +27,17 @@ import java.util.stream.Collectors;
 @Transactional
 public class AccountServiceImpl implements AccountService {
 
-    private AccountRepository accountRepository;
-    private AccountMapper accountMapper;
-    private TransactionRepository transactionRepository;
-    private CustomerMapper customerMapper;
-    private BalanceMapper balanceMapper;
+    private final AccountRepository accountRepository;
+    private final AccountMapper accountMapper;
+    private final TransactionRepository transactionRepository;
+    private final CustomerMapper customerMapper;
+    private final BalanceMapper balanceMapper;
 
-    @Autowired
-    public void setAccountRepository(AccountRepository accountRepository) {
+    public AccountServiceImpl(AccountRepository accountRepository, AccountMapper accountMapper, TransactionRepository transactionRepository, CustomerMapper customerMapper, BalanceMapper balanceMapper) {
         this.accountRepository = accountRepository;
-    }
-
-    @Autowired
-    public void setAccountMapper(AccountMapper accountMapper) {
         this.accountMapper = accountMapper;
-    }
-
-    @Autowired
-    public void setTransactionRepository(TransactionRepository transactionRepository) {
         this.transactionRepository = transactionRepository;
-    }
-
-    @Autowired
-    public void setCustomerMapper(CustomerMapper customerMapper) {
         this.customerMapper = customerMapper;
-    }
-
-    @Autowired
-    public void setBalanceMapper(BalanceMapper balanceMapper) {
         this.balanceMapper = balanceMapper;
     }
     @Override
@@ -71,17 +53,16 @@ public class AccountServiceImpl implements AccountService {
         AccountDto receiverAccountDto = null;
 
         if (account.getSenderAccount() != null) {
-            senderAccountDto = accountMapper.toDto(account.getSenderAccount(), balanceMapper); // pass balanceMapper here
+            senderAccountDto = accountMapper.toDto(account.getSenderAccount());
         }
 
         if (account.getReceiverAccount() != null) {
-            receiverAccountDto = accountMapper.toDto(account.getReceiverAccount(), balanceMapper); // pass balanceMapper here
+            receiverAccountDto = accountMapper.toDto(account.getReceiverAccount());
         }
 
         return AccountDto.builder()
                 .id(account.getId())
                 .accountNumber(account.getAccountNumber())
-                .balance(account.getBalance())
                 .currencyType(account.getCurrencyType())
                 .customer(customerDto)
                 .balances(balanceDtos)
@@ -127,7 +108,6 @@ public class AccountServiceImpl implements AccountService {
         return accountMapper.toDto(account);
     }
 
-    @Override
     public void transferMoney(Long senderAccountId, Long receiverAccountId, Double amount, CurrencyType currencyType) throws InsufficientBalanceException, AccountNotFoundException {
         Account senderAccount = accountRepository.findById(senderAccountId).orElseThrow(() -> new AccountNotFoundException());
         Account receiverAccount = accountRepository.findById(receiverAccountId).orElseThrow(() -> new AccountNotFoundException());
@@ -148,9 +128,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
 
-
     @Override
-    public AccountDto withdraw(Long senderAccountId, Double amount) throws InsufficientBalanceException, AccountNotFoundException {
+    public void withdraw(Long senderAccountId, Double amount) throws InsufficientBalanceException, AccountNotFoundException {
         Account senderAccount = accountRepository.findById(senderAccountId)
                 .orElseThrow(() -> new AccountNotFoundException());
 
@@ -160,22 +139,12 @@ public class AccountServiceImpl implements AccountService {
         }
 
         senderAccount.withdraw(amount);
-
-        Account updatedSenderAccount = accountRepository.save(senderAccount);
-
-        return accountMapper.toDto(updatedSenderAccount);
     }
 
-
     @Override
-    public AccountDto deposit(Long receiverAccountId, Double amount) throws AccountNotFoundException {
+    public void deposit(Long receiverAccountId, Double amount) throws AccountNotFoundException {
         Account account = accountRepository.findById(receiverAccountId)
                 .orElseThrow(() -> new AccountNotFoundException());
         account.deposit(amount, account.getCurrencyType());
-        account = accountRepository.save(account);
-        return accountMapper.toDto(account);
     }
-
 }
-
-

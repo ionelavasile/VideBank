@@ -1,18 +1,19 @@
 package com.example.videbank.service.impl;
 
 import com.example.videbank.dto.TransactionDto;
+import com.example.videbank.entity.CurrencyType;
+import com.example.videbank.entity.DirectionOfTransaction;
 import com.example.videbank.entity.Transaction;
 import com.example.videbank.mapper.TransactionMapper;
 import com.example.videbank.repository.TransactionRepository;
 import com.example.videbank.service.TransactionService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 
 @Service
-@Transactional
 public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
@@ -61,11 +62,23 @@ public class TransactionServiceImpl implements TransactionService {
     public TransactionDto updateTransaction(TransactionDto transactionDto) {
         Transaction transaction = transactionRepository.findById(transactionDto.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Transaction not found with id: " + transactionDto.getId()));
-        transaction = transactionMapper.toEntity(transactionDto);
+
+        // Update the transaction entity with the values from the DTO
+        transaction.setDirectionOfTransaction(transactionDto.getDirectionOfTransaction());
+        transaction.setCurrencyType(transactionDto.getCurrencyType());
+
         transaction = transactionRepository.save(transaction);
+
         return transactionMapper.toDto(transaction);
     }
+
+    @Override
+    public List<TransactionDto> findByDirectionOfTransactionAndCurrencyType(DirectionOfTransaction direction, CurrencyType currencyType) {
+        List<Transaction> transactions = transactionRepository.findByDirectionOfTransactionAndCurrencyType(direction, currencyType);
+        return transactionMapper.toDtoList(transactions);
+    }
 }
+
 
 
 

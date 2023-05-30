@@ -3,14 +3,25 @@ package com.example.videbank.mapper;
 import com.example.videbank.dto.CustomerDto;
 import com.example.videbank.entity.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Component
+@Lazy
+//To delay the initialization until it is actually used.
+// This can help break the circular dependency chain.
 public class CustomerMapper {
 
+    private AccountMapper accountMapper;
+
     @Autowired
-    private static AccountMapper accountMapper;
+    public void setAccountMapper(AccountMapper accountMapper) {
+        this.accountMapper = accountMapper;
+    }
 
     public CustomerDto toDto(Customer customer) {
         return CustomerDto.builder()
@@ -24,22 +35,22 @@ public class CustomerMapper {
                 .build();
     }
 
-    public static Customer toEntity(CustomerDto customerDto) {
-        Customer customer = new Customer();
-        customer.setId(customerDto.getId());
-        customer.setFirstName(customerDto.getFirstName());
-        customer.setLastName(customerDto.getLastName());
-        customer.setEmail(customerDto.getEmail());
-        customer.setPhone(customerDto.getPhone());
-        customer.setCountry(customerDto.getCountry());
-        customer.setAccounts(accountMapper.toEntityList(customerDto.getAccounts()));
-        return customer;
+    public Customer toEntity(CustomerDto customerDto) {
+        return Customer.builder()
+                .id(customerDto.getId())
+                .firstName(customerDto.getFirstName())
+                .lastName(customerDto.getLastName())
+                .email(customerDto.getEmail())
+                .phone(customerDto.getPhone())
+                .country(customerDto.getCountry())
+                .accounts(accountMapper.toEntityList(customerDto.getAccounts()))
+                .build();
+    }
+    public List<CustomerDto> toDtoList(List<Customer> customers) {
+        return customers.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 
 
 }
-
-
-
-
-

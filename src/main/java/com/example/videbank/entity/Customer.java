@@ -32,8 +32,17 @@ public class Customer {
     private List<Account> accounts;
 
     public Customer toEntity() {
-        return null;
+        return Customer.builder()
+                .id(this.getId())
+                .firstName(this.getFirstName())
+                .lastName(this.getLastName())
+                .email(this.getEmail())
+                .phone(this.getPhone())
+                .country(this.getCountry())
+                .accounts(this.getAccounts())
+                .build();
     }
+
 }
 
 

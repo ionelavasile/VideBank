@@ -17,18 +17,16 @@ public class AccountController {
     public AccountController(AccountService accountService) {
         this.accountService = accountService;
     }
-
     @GetMapping("/{id}")
     public ResponseEntity<AccountDto> getAccountById(@PathVariable Long id) {
         AccountDto accountDto = accountService.getById(id);
         return ResponseEntity.ok(accountDto);
     }
 
-
     @GetMapping
     public ResponseEntity<List<AccountDto>> getAllAccounts() {
-        List<AccountDto> accountDto = accountService.getAllAccounts();
-        return ResponseEntity.ok(accountDto);
+        List<AccountDto> accountDtos = accountService.getAllAccounts();
+        return ResponseEntity.ok(accountDtos);
     }
 
     @PostMapping("/create")
@@ -37,13 +35,11 @@ public class AccountController {
         return ResponseEntity.ok(createdAccountDto);
     }
 
-
     @PostMapping("/save")
     public ResponseEntity<AccountDto> saveAccount(@RequestBody AccountDto accountDto) {
         AccountDto savedAccountDto = accountService.saveAccount(accountDto);
-        return new ResponseEntity<>(savedAccountDto, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedAccountDto);
     }
-
 
     @PutMapping("/{id}")
     public ResponseEntity<AccountDto> updateAccount(@PathVariable Long id, @RequestBody AccountDto accountDto) {
@@ -58,5 +54,6 @@ public class AccountController {
         return ResponseEntity.noContent().build();
     }
 }
+
 
 

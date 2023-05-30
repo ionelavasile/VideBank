@@ -1,6 +1,5 @@
 package com.example.videbank.repository;
 
-import com.example.videbank.entity.Account;
 import com.example.videbank.entity.CurrencyType;
 import com.example.videbank.entity.DirectionOfTransaction;
 import com.example.videbank.entity.Transaction;

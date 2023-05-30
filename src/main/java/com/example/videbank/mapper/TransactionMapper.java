@@ -11,14 +11,14 @@ import java.util.stream.Collectors;
 public class TransactionMapper {
 
     public TransactionDto toDto(Transaction transaction) {
-        TransactionDto transactionDto = new TransactionDto();
-        transactionDto.setId(transaction.getId());
-        transactionDto.setAmount(transaction.getAmount());
-        transactionDto.setCurrencyType(transaction.getCurrencyType());
-        transactionDto.setDirectionOfTransaction(transaction.getDirectionOfTransaction());
-        transactionDto.setDescription(transaction.getDescription());
-        transactionDto.setBalanceAfterTransaction(transaction.getBalanceAfterTransaction());
-        return transactionDto;
+        return TransactionDto.builder()
+                .id(transaction.getId())
+                .amount(transaction.getAmount())
+                .currencyType(transaction.getCurrencyType())
+                .directionOfTransaction(transaction.getDirectionOfTransaction())
+                .description(transaction.getDescription())
+                .balanceAfterTransaction(transaction.getBalanceAfterTransaction())
+                .build();
     }
 
     public Transaction toEntity(TransactionDto transactionDto) {
@@ -32,17 +32,13 @@ public class TransactionMapper {
         return transaction;
     }
 
+
     public List<TransactionDto> toDtoList(List<Transaction> transactions) {
         return transactions.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
-    public List<Transaction> toEntityList(List<TransactionDto> transactionDto) {
-        return transactionDto.stream()
-                .map(this::toEntity)
-                .collect(Collectors.toList());
-    }
 }
 
 

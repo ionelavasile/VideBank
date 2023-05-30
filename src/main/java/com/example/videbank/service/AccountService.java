@@ -28,9 +28,12 @@ public interface AccountService {
     // Update an existing account
     AccountDto updateAccount(AccountDto accountDto);
 
+    // Withdraw money from an account
+    void withdraw(Long accountId, Double amount) throws InsufficientBalanceException, AccountNotFoundException;
+
+    // Deposit money into an account
+    void deposit(Long accountId, Double amount) throws AccountNotFoundException;
     void transferMoney(Long senderAccountId, Long receiverAccountId, Double amount, CurrencyType currencyType) throws InsufficientBalanceException, AccountNotFoundException;
 
-    AccountDto withdraw(Long senderAccountId, Double amount) throws InsufficientBalanceException, AccountNotFoundException;
-
-    AccountDto deposit(Long receiverAccountId, Double amount) throws AccountNotFoundException;
 }
+

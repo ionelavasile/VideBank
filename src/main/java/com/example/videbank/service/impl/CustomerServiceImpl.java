@@ -6,10 +6,10 @@ import com.example.videbank.mapper.CustomerMapper;
 import com.example.videbank.repository.CustomerRepository;
 import com.example.videbank.service.CustomerService;
 import org.springframework.stereotype.Service;
-import javax.transaction.Transactional;
+
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -33,9 +33,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public List<CustomerDto> getAllCustomers() {
         List<Customer> customers = customerRepository.findAll();
-        return customers.stream()
-                .map(customerMapper::toDto)
-                .collect(Collectors.toList());
+        return customerMapper.toDtoList(customers);
     }
 
 

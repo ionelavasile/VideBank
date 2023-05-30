@@ -1,11 +1,14 @@
 package com.example.videbank.service;
 
 import com.example.videbank.dto.AccountDto;
+import com.example.videbank.dto.BalanceDto;
 import com.example.videbank.dto.TransactionDto;
 import com.example.videbank.entity.CurrencyType;
 import com.example.videbank.exceptions.ResourcesNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
 
 
 @Service
@@ -29,13 +32,19 @@ public class TransferMoney {
         if (senderAccountDto == null || receiverAccountDto == null) {
             throw new ResourcesNotFoundException("Sender or receiver account not found");
         }
-        if (senderAccountDto.getBalance() < amount) {
+        if (senderAccountDto.getBalance() == null || senderAccountDto.getBalance() < amount) {
             throw new RuntimeException("Insufficient funds");
         }
 
         // perform the transfer
-        senderAccountDto.setBalance(senderAccountDto.getBalance() - amount);
-        receiverAccountDto.setBalance(receiverAccountDto.getBalance() + amount);
+        senderAccountDto.setBalances(Collections.singletonList(BalanceDto.builder()
+                .amount(senderAccountDto.getBalance() - amount)
+                .currencyType(senderAccountDto.getCurrencyType())
+                .build()));
+        receiverAccountDto.setBalances(Collections.singletonList(BalanceDto.builder()
+                .amount(receiverAccountDto.getBalance() + amount)
+                .currencyType(receiverAccountDto.getCurrencyType())
+                .build()));
         accountService.saveAccount(senderAccountDto);
         accountService.saveAccount(receiverAccountDto);
 
@@ -52,8 +61,6 @@ public class TransferMoney {
         return transactionDto;
     }
 }
-
-
 
 
 

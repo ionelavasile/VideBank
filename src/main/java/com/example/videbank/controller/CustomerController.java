@@ -30,8 +30,9 @@ public class CustomerController {
     }
 
     @GetMapping
-    public List<CustomerDto> getAllCustomers() {
-        return customerService.getAllCustomers();
+    public ResponseEntity<List<CustomerDto>> getAllCustomers() {
+        List<CustomerDto> customerDtos = customerService.getAllCustomers();
+        return ResponseEntity.ok(customerDtos);
     }
 
     @PostMapping
@@ -40,12 +41,14 @@ public class CustomerController {
         return ResponseEntity.created(URI.create("/customers/" + createdCustomerDto.getId()))
                 .body(createdCustomerDto);
     }
+
     @PostMapping("/save")
     public ResponseEntity<CustomerDto> saveCustomer(@RequestBody CustomerDto customerDto) {
         CustomerDto savedCustomerDto = customerService.saveCustomer(customerDto);
         return ResponseEntity.created(URI.create("/customers/" + savedCustomerDto.getId()))
                 .body(savedCustomerDto);
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<CustomerDto> updateCustomer(@PathVariable Long id, @RequestBody CustomerDto customerDto) {
         customerDto.setId(id);
@@ -62,5 +65,5 @@ public class CustomerController {
         customerService.deleteCustomer(id);
         return ResponseEntity.noContent().build();
     }
-
 }
+

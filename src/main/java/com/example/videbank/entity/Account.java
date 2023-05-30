@@ -1,10 +1,10 @@
 package com.example.videbank.entity;
 
-import com.example.videbank.dto.CustomerDto;
-import com.example.videbank.mapper.CustomerMapper;
+import com.example.videbank.dto.AccountDto;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,95 +29,19 @@ public class Account {
     private CurrencyType currencyType;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
-    private List<Balance> balances;
+    private List<Balance> balances = new ArrayList<>();
 
     @OneToMany(mappedBy = "senderAccount", cascade = CascadeType.ALL)
-    private List<Transaction> senderTransactions;
+    private List<Transaction> senderTransactions = new ArrayList<>();
 
     @OneToMany(mappedBy = "receiverAccount", cascade = CascadeType.ALL)
-    private List<Transaction> receiverTransactions;
+    private List<Transaction> receiverTransactions = new ArrayList<>();
 
-    public String getAccountNumber() {
-        return null;
-    }
-
-    public void setAccountNumber(String accountNumber) {
-    }
+    @Column(name = "account_number")
+    private String accountNumber;
 
     public void withdraw(Double amount) {
-        if (amount <= 0) {
-            throw new IllegalArgumentException("Amount to withdraw must be greater than zero");
-        }
-        Balance balance = getBalanceForWithdrawal();
-        if (balance.getAmount() < amount) {
-            throw new IllegalStateException("Insufficient balance");
-        }
-        balance.setAmount(balance.getAmount() - amount);
-        addTransaction(amount, CurrencyType.USD, DirectionOfTransaction.OUT, "Withdraw");
-    }
-
-    private Balance getBalanceForWithdrawal() {
-        Optional<Balance> optionalBalance = balances.stream()
-                .filter(balance -> balance.getCurrencyType() == CurrencyType.USD)
-                .findFirst();
-        return optionalBalance.orElseThrow(() -> new IllegalStateException("No balance found"));
-    }
-
-    public void deposit(Double amount, CurrencyType currencyType) {
-        if (amount <= 0) {
-            throw new IllegalArgumentException("Amount to deposit must be greater than zero");
-        }
-        Balance balance = getBalance(currencyType);
-        balance.setAmount(balance.getAmount() + amount);
-        addTransaction(amount, CurrencyType.USD, DirectionOfTransaction.IN, "Deposit");
-    }
-
-    public Balance getBalance(CurrencyType currencyType) {
-        Optional<Balance> optionalBalance = balances.stream()
-                .filter(balance -> balance.getCurrencyType() == CurrencyType.USD)
-                .findFirst();
-        return optionalBalance.orElseGet(() -> {
-            Balance newBalance = new Balance();
-            newBalance.setAmount(0.0);
-            newBalance.setCurrencyType(CurrencyType.USD);
-            newBalance.setAccount(this);
-            balances.add(newBalance);
-            return newBalance;
-        });
-    }
-
-    private void addTransaction(Double amount, CurrencyType currencyType, DirectionOfTransaction direction, String description) {
-        Transaction transaction = new Transaction();
-        transaction.setAmount(amount);
-        transaction.setCurrencyType(currencyType);
-        transaction.setDirectionOfTransaction(direction);
-        transaction.setDescription(description);
-        if (direction == DirectionOfTransaction.OUT) {
-            transaction.setSenderAccount(this);
-        } else {
-            transaction.setReceiverAccount(this);
-        }
-        senderTransactions.add(transaction);
-        receiverTransactions.add(transaction);
-    }
-
-
-    public void setBalance(Double balance) {
-    }
-    public void setCustomer(CustomerDto customerDto) {
-        if (customerDto == null) {
-            this.customer = null;
-        } else {
-            this.customer = CustomerMapper.toEntity(customerDto).toEntity();
-        }
-    }
-
-
-
-    public void setSenderAccount(Account senderAccount) {
-    }
-
-    public void setReceiverAccount(Account receiverAccount) {
+        // Withdrawal logic
     }
 
     public Account getSenderAccount() {
@@ -128,6 +52,28 @@ public class Account {
     public Account getReceiverAccount() {
         Optional<Transaction> optionalTransaction = receiverTransactions.stream().findFirst();
         return optionalTransaction.map(Transaction::getSenderAccount).orElse(null);
+    }
+
+    public Balance getBalance(CurrencyType currencyType) {
+        Optional<Balance> optionalBalance = balances.stream()
+                .filter(balance -> balance.getCurrencyType() == currencyType)
+                .findFirst();
+        return optionalBalance.orElseGet(() -> {
+            Balance newBalance = new Balance();
+            newBalance.setAmount(0.0);
+            newBalance.setCurrencyType(currencyType);
+            newBalance.setAccount(this);
+            balances.add(newBalance);
+            return newBalance;
+        });
+    }
+
+
+    public void deposit(Double amount, CurrencyType currencyType) {
+    }
+
+    public AccountDto toDto() {
+        return null;
     }
 
     public Double getBalance() {

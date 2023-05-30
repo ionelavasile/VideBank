@@ -3,39 +3,35 @@ package com.example.videbank.mapper;
 import com.example.videbank.dto.BalanceDto;
 import com.example.videbank.entity.Balance;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Component
 @AllArgsConstructor
-
 public class BalanceMapper {
 
-   @Autowired
-    private AccountMapper accountMapper;
+    private final AccountMapper accountMapper;
 
     public BalanceDto toDto(Balance balance) {
-        BalanceDto balanceDto = new BalanceDto();
-        balanceDto.setId(balance.getId());
-        balanceDto.setAccount(accountMapper.toDto(balance.getAccount()));
-        balanceDto.setCurrencyType(balance.getCurrencyType());
-        balanceDto.setAmount(balance.getAmount());
-        balanceDto.setDescription(balance.getDescription());
-        return balanceDto;
+        return new BalanceDto(
+                balance.getId(),
+                accountMapper.toDto(balance.getAccount()),
+                balance.getAmount(),
+                balance.getCurrencyType(),
+                balance.getDescription()
+        );
     }
 
     public Balance toEntity(BalanceDto balanceDto) {
-        Balance balance = new Balance();
-        balance.setId(balanceDto.getId());
-        balance.setAccount(accountMapper.toEntity(balanceDto.getAccount()));
-        balance.setCurrencyType(balanceDto.getCurrencyType());
-        balance.setAmount(balanceDto.getAmount());
-        balance.setDescription(balanceDto.getDescription());
-        return balance;
+        return new Balance(
+                        balanceDto.getId(),
+                        accountMapper.toEntity(balanceDto.getAccount()),
+                balanceDto.getCurrencyType(),
+                balanceDto.getAmount(),
+                        balanceDto.getDescription()
+                );
     }
 
     public List<BalanceDto> toDtoList(List<Balance> balances) {
@@ -50,6 +46,8 @@ public class BalanceMapper {
                 .collect(Collectors.toList());
     }
 }
+
+
 
 
 

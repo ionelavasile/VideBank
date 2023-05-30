@@ -24,18 +24,18 @@ public class SenderAccount {
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
-    private Double balance;
+    private Double currentBalance;
 
-    public void withdraw(Double amount, CurrencyType currencyType) throws InsufficientBalanceException {
-        if (balance < amount) {
+    public void withdraw(Double amount, CurrencyType currency) throws InsufficientBalanceException {
+        if (currentBalance < amount) {
             throw new InsufficientBalanceException();
         }
-        balance -= amount;
-        // Update the balance field in the database here.
+        currentBalance -= amount;
+        // Update the balance field in the database here using an ORM framework or a repository/service method.
     }
 
     public void deposit(Double amount) {
-        balance += amount;
-        // Update the balance field in the database here.
+        currentBalance += amount;
+        // Update the balance field in the database here using an ORM framework or a repository/service method.
     }
 }

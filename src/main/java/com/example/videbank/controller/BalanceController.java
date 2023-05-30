@@ -1,10 +1,12 @@
 package com.example.videbank.controller;
 
 import com.example.videbank.dto.BalanceDto;
+import com.example.videbank.exceptions.BalanceNotFoundException;
+import com.example.videbank.exceptions.BalanceValidationException;
 import com.example.videbank.service.BalanceService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -28,8 +30,8 @@ public class BalanceController {
 
     @GetMapping
     public ResponseEntity<List<BalanceDto>> getAllBalances() {
-        List<BalanceDto> balanceDto = balanceService.getAllBalances();
-        return ResponseEntity.ok(balanceDto);
+        List<BalanceDto> balanceDtos = balanceService.getAllBalances();
+        return ResponseEntity.ok(balanceDtos);
     }
 
     @PostMapping
@@ -39,11 +41,7 @@ public class BalanceController {
                 .created(URI.create("/balances/" + createdBalance.getId()))
                 .body(createdBalance);
     }
-    @PutMapping
-    public ResponseEntity<BalanceDto> saveBalance(@RequestBody BalanceDto balanceDto) {
-        BalanceDto savedBalanceDto = balanceService.saveBalance(balanceDto);
-        return ResponseEntity.ok(savedBalanceDto);
-    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateBalance(@PathVariable Long id, @RequestBody BalanceDto balanceDto) {
         balanceDto.setId(id);
@@ -56,7 +54,18 @@ public class BalanceController {
         balanceService.deleteBalance(id);
         return ResponseEntity.noContent().build();
     }
+
+    @ExceptionHandler(BalanceNotFoundException.class)
+    public ResponseEntity<String> handleBalanceNotFoundException(BalanceNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(BalanceValidationException.class)
+    public ResponseEntity<String> handleBalanceValidationException(BalanceValidationException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }
+
 
 
 
