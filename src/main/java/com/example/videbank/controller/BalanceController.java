@@ -41,15 +41,23 @@ public class BalanceController {
                 .created(URI.create("/balances/" + createdBalance.getId()))
                 .body(createdBalance);
     }
+    @PostMapping("/save")
+    public ResponseEntity<BalanceDto> saveBalance(@RequestBody BalanceDto balanceDto) {
+        BalanceDto savedBalance = balanceService.saveBalance(balanceDto);
+        return ResponseEntity
+                .created(URI.create("/balances/" + savedBalance.getId()))
+                .body(savedBalance);
+    }
 
-    @PutMapping("/{id}")
+
+    @PutMapping("/update")
     public ResponseEntity<Void> updateBalance(@PathVariable Long id, @RequestBody BalanceDto balanceDto) {
         balanceDto.setId(id);
         balanceService.updateBalance(balanceDto);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteBalance(@PathVariable Long id) {
         balanceService.deleteBalance(id);
         return ResponseEntity.noContent().build();

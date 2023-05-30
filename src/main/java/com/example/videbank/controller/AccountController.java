@@ -41,14 +41,14 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedAccountDto);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update")
     public ResponseEntity<AccountDto> updateAccount(@PathVariable Long id, @RequestBody AccountDto accountDto) {
         accountDto.setId(id);
         AccountDto updatedAccountDto = accountService.updateAccount(accountDto);
         return ResponseEntity.ok(updatedAccountDto);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {
         accountService.deleteAccount(id);
         return ResponseEntity.noContent().build();

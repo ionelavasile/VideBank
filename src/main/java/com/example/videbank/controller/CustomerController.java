@@ -49,7 +49,7 @@ public class CustomerController {
                 .body(savedCustomerDto);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update")
     public ResponseEntity<CustomerDto> updateCustomer(@PathVariable Long id, @RequestBody CustomerDto customerDto) {
         customerDto.setId(id);
         CustomerDto updatedCustomerDto = customerService.updateCustomer(customerDto);
@@ -60,7 +60,7 @@ public class CustomerController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
         customerService.deleteCustomer(id);
         return ResponseEntity.noContent().build();

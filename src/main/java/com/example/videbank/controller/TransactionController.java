@@ -46,14 +46,21 @@ public class TransactionController {
                 .body(createdTransactionDto);
     }
 
-    @PutMapping("/{id}")
+    @PostMapping("/save")
+    public ResponseEntity<TransactionDto> saveTransaction(@RequestBody TransactionDto transactionDto) {
+        TransactionDto savedTransactionDto = transactionService.saveTransaction(transactionDto);
+        return ResponseEntity.created(URI.create("/api/transactions/" + savedTransactionDto.getId()))
+                .body(savedTransactionDto);
+    }
+
+    @PutMapping("/update")
     public ResponseEntity<TransactionDto> updateTransaction(@PathVariable Long id, @RequestBody TransactionDto transactionDto) {
         transactionDto.setId(id);
         TransactionDto updatedTransactionDto = transactionService.updateTransaction(transactionDto);
         return ResponseEntity.ok(updatedTransactionDto);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
         transactionService.deleteTransaction(id);
         return ResponseEntity.noContent().build();
